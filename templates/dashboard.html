@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Statistics Cards -->
+    <div class="col-md-4 mb-4">
+        <div class="card stat-card">
+            <div class="card-body text-center">
+                <i class="fas fa-boxes fa-3x mb-3"></i>
+                <h3>{{ total_items }}</h3>
+                <p class="mb-0">Total Items</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h3>{{ low_stock }}</h3>
+                <p class="mb-0">Low Stock Items</p>
+            </div>
+        </div>
+    </div>
+    {% if session.role == 'superadmin' %}
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h3>{{ total_users }}</h3>
+                <p class="mb-0">Total Users</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Recent Items -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Inventory Items</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_items %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Added</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in recent_items %}
+                            <tr>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.category }}</td>
+                                <td>
+                                    <span class="badge {% if item.quantity < 10 %}bg-danger{% else %}bg-success{% endif %}">
+                                        {{ item.quantity }}
+                                    </span>
+                                </td>
+                                <td>${{ "%.2f"|format(item.price) }}</td>
+                                <td>{{ item.created_at[:10] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No inventory items yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
